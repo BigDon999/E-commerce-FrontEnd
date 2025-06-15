@@ -1,0 +1,385 @@
+/* CartPage.module.css */
+
+.cartContainer {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  min-height: calc(100vh - 200px);
+  margin-bottom: 2rem;
+}
+
+.cartTitle {
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.cartGrid {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: 2rem;
+}
+
+.cartItems {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.cartItem {
+  display: flex;
+  gap: 1rem;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+  background: white;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cartItem:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.imageContainer {
+  flex-shrink: 0;
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.itemImage {
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.itemDetails {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.itemDetails h4 {
+  margin: 0 0 0.5rem;
+  font-size: 1.1rem;
+  color: #333;
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.quantityBtn {
+  padding: 0.3rem 0.8rem;
+  border-radius: 4px;
+  background: #ffe0f0;
+  border: 1px solid #ff91c0;
+  cursor: pointer;
+  color: #d6006e;
+  font-weight: bold;
+  transition: all 0.2s ease;
+}
+
+.quantityBtn:hover {
+  background: #ff91c0;
+  color: white;
+}
+
+.itemTotal {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: flex-end;
+  min-width: 120px;
+}
+
+.removeBtn {
+  margin-top: 0.5rem;
+  background: #ff4d6d;
+  color: white;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.removeBtn:hover {
+  background: #d6006e;
+}
+
+.summary {
+  background: #fff0f5;
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid #ff91c0;
+  position: sticky;
+  top: 2rem;
+  height: fit-content;
+}
+
+.summary h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.summaryDetails {
+  margin-bottom: 1rem;
+}
+
+.summaryDetails p {
+  margin: 0.5rem 0;
+  color: #666;
+}
+
+.total {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  color: #333;
+  border-top: 1px solid #ff91c0;
+  padding-top: 1rem;
+}
+
+.addressLabel {
+  margin-top: 1rem;
+  color: #666;
+}
+
+.addressBtn {
+  margin-top: 0.5rem;
+  background-color: #ff69b4;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s ease;
+  width: 100%;
+}
+
+.addressBtn:hover {
+  background: #d6006e;
+}
+
+.checkoutBtn {
+  width: 100%;
+  background-color: #d6006e;
+  color: #fff;
+  padding: 0.8rem;
+  border-radius: 6px;
+  font-weight: bold;
+  border: none;
+  cursor: pointer;
+  margin-top: 1rem;
+  transition: background 0.2s ease;
+}
+
+.checkoutBtn:hover {
+  background: #b3005c;
+}
+
+.continueShopping {
+  display: inline-block;
+  margin-top: 1rem;
+  text-decoration: underline;
+  color: #d6006e;
+  transition: color 0.2s ease;
+}
+
+.continueShopping:hover {
+  color: #b3005c;
+}
+
+.emptyCart {
+  text-align: center;
+  padding: 3rem;
+  background: white;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.emptyCart p {
+  color: #666;
+  margin-bottom: 1rem;
+}
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 300px;
+}
+
+.loadingSpinner {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid #ff69b4;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .cartContainer {
+    padding: 1rem;
+  }
+
+  .cartTitle {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .cartGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .cartItem {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1rem;
+  }
+
+  .imageContainer {
+    width: 150px;
+    height: 150px;
+    margin-bottom: 1rem;
+  }
+
+  .itemDetails {
+    width: 100%;
+    align-items: center;
+  }
+
+  .controls {
+    justify-content: center;
+    margin: 1rem 0;
+  }
+
+  .itemTotal {
+    width: 100%;
+    align-items: center;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid #ddd;
+  }
+
+  .summary {
+    position: static;
+    margin-top: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .cartContainer {
+    padding: 0.5rem;
+  }
+
+  .cartTitle {
+    font-size: 1.3rem;
+  }
+
+  .imageContainer {
+    width: 120px;
+    height: 120px;
+  }
+
+  .itemDetails h4 {
+    font-size: 1rem;
+  }
+
+  .quantityBtn {
+    padding: 0.2rem 0.6rem;
+  }
+
+  .removeBtn {
+    width: 100%;
+  }
+}
+
+/* Modal styles */
+.addressModalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.addressModal {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 500px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+  border: 2px solid #ff69b4;
+}
+
+.addressForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+}
+
+.saveBtn {
+  background-color: #ff69b4;
+  color: white;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.cancelBtn {
+  background-color: #ffe0f0;
+  color: #333;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.modalTitle {
+  margin-bottom: 1rem;
+  color: #d6006e;
+  font-size: 1.5rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.addressInput {
+  padding: 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ff69b4;
+  outline: none;
+  font-size: 1rem;
+}
+
+.addressInput:focus {
+  border-color: #d6006e;
+  box-shadow: 0 0 0 2px #ffe0f0;
+}

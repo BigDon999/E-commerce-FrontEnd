@@ -1,0 +1,170 @@
+.container {
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.productContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  background: white;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.imageContainer {
+  position: relative;
+  width: 100%;
+  height: 500px;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.productImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.productImage:hover {
+  transform: scale(1.05);
+}
+
+.productInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.productName {
+  font-size: 2rem;
+  color: #333;
+  margin: 0;
+}
+
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.rating span {
+  font-size: 1.5rem;
+}
+
+.ratingText {
+  color: #666;
+  font-size: 1rem !important;
+}
+
+.price {
+  font-size: 2rem;
+  color: #ff4da6;
+  font-weight: bold;
+  margin: 0;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.addToCartBtn {
+  background: #ff4da6;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  font-weight: bold;
+  flex: 1;
+}
+
+.addToCartBtn:hover {
+  background: #e13c8e;
+}
+
+.viewCartBtn {
+  background: white;
+  color: #ff4da6;
+  border: 2px solid #ff4da6;
+  padding: 1rem 2rem;
+  font-size: 1.1rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  flex: 1;
+}
+
+.viewCartBtn:hover {
+  background: #fff5f9;
+  transform: translateY(-2px);
+}
+
+.features {
+  margin-top: 2rem;
+}
+
+.features h2 {
+  color: #333;
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.features li {
+  padding: 0.5rem 0;
+  color: #666;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.features li::before {
+  content: "✓";
+  color: #ff4da6;
+  position: absolute;
+  left: 0;
+}
+
+.notFound {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+.notFound h1 {
+  color: #666;
+  font-size: 2rem;
+}
+
+@media (max-width: 768px) {
+  .productContainer {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
+
+  .imageContainer {
+    height: 300px;
+  }
+
+  .productName {
+    font-size: 1.5rem;
+  }
+
+  .price {
+    font-size: 1.5rem;
+  }
+} 
