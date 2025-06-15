@@ -1,7 +1,6 @@
 import React from "react";
 import styles from "./About.module.css";
 import Image from "next/image";
-
 const AboutDeMart = () => {
   return (
     <section className={styles.aboutSection}>
