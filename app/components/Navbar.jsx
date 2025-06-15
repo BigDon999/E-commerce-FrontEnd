@@ -20,7 +20,7 @@ export default function Navbar() {
   const searchResults = searchProducts(searchQuery);
 
   // Close search and mobile menu when clicking outside
-  useEffect(() => {
+  useEffect(() => {    
     const handleClickOutside = (event) => {
       if (
         showSearch &&
