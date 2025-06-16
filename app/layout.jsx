@@ -14,7 +14,11 @@ const inter = Inter({
 export const metadata = {
   title: 'E-Commerce Store',
   description: 'Your one-stop shop for all your needs',
-  viewport: 'width=device-width, initial-scale=1',
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
   themeColor: '#ffffff',
 };
 

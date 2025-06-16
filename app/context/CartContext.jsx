@@ -26,10 +26,16 @@ export function CartProvider({ children }) {
     try {
       const savedCart = localStorage.getItem('cart');
       if (savedCart) {
-        setCart(JSON.parse(savedCart));
+        const parsedCart = JSON.parse(savedCart);
+        if (Array.isArray(parsedCart)) {
+          setCart(parsedCart);
+        } else {
+          setCart([]);
+        }
       }
     } catch (err) {
       console.error('Error loading cart:', err);
+      setCart([]);
     } finally {
       setLoading(false);
     }
@@ -37,7 +43,11 @@ export function CartProvider({ children }) {
 
   useEffect(() => {
     if (!loading) {
-      localStorage.setItem('cart', JSON.stringify(cart));
+      try {
+        localStorage.setItem('cart', JSON.stringify(cart));
+      } catch (err) {
+        console.error('Error saving cart:', err);
+      }
     }
   }, [cart, loading]);
 
@@ -53,6 +63,8 @@ export function CartProvider({ children }) {
   }, [shippingAddress]);
 
   const addToCart = useCallback((product) => {
+    if (!product) return;
+    
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.id === product.id);
       if (existingItem) {
@@ -106,7 +118,7 @@ export function CartProvider({ children }) {
     setError,
     shippingAddress,
     setShippingAddress,
-  }), [cart, loading, addToCart, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount, error, setError, shippingAddress, setShippingAddress]);
+  }), [cart, loading, addToCart, removeFromCart, updateQuantity, clearCart, cartTotal, cartCount, error, shippingAddress]);
 
   return (
     <CartContext.Provider value={value}>

@@ -7,8 +7,6 @@ const nextConfig = {
   reactStrictMode: true,
   // Enable production source maps for better debugging
   productionBrowserSourceMaps: true,
-  // Optimize CSS loading
-  optimizeFonts: true,
   // Enable compression
   compress: true,
   // Enable SWC minification
