@@ -54,6 +54,7 @@ export default function Navbar() {
         </Link>
 
         <ul className={styles.desktopNav}>
+          <li><Link href="/">Home</Link></li>
           <li><Link href="/shop">Shop</Link></li>
           <li><Link href="/about">About</Link></li>
           <li><Link href="/contact">Contact</Link></li>
@@ -163,6 +164,9 @@ export default function Navbar() {
       {isMobileMenuOpen && (
         <div className={styles.mobileMenu}>
           <nav className={styles.mobileNav}>
+            <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
+              Home
+            </Link>
             <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)}>
               Shop
             </Link>
