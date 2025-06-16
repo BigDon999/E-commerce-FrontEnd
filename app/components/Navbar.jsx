@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import styles from "./Navbar.module.css";
 import Link from "next/link";
 import CartIcon from "./CartIcon";
@@ -17,63 +17,76 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { searchProducts } = useProducts();
-  const searchResults = searchProducts(searchQuery);
 
-  // Close search and mobile menu when clicking outside
-  useEffect(() => {    
-    const handleClickOutside = (event) => {
-      if (
-        showSearch &&
-        !event.target.closest(`.${styles.searchPopup}`) &&
-        !event.target.closest(`.${styles.searchIcon}`)
-      ) {
-        setShowSearch(false);
-        setSearchQuery("");
-      }
-      if (
-        isMobileMenuOpen &&
-        !event.target.closest(`.${styles.mobileMenu}`) &&
-        !event.target.closest(`.${styles.hamburger}`)
-      ) {
-        setIsMobileMenuOpen(false);
-      }
-    };
+  // Memoize search results
+  const searchResults = useMemo(() => {
+    return searchProducts(searchQuery);
+  }, [searchQuery, searchProducts]);
 
+  // Memoize click outside handler
+  const handleClickOutside = useCallback((event) => {
+    if (
+      showSearch &&
+      !event.target.closest(`.${styles.searchPopup}`) &&
+      !event.target.closest(`.${styles.searchIcon}`)
+    ) {
+      setShowSearch(false);
+      setSearchQuery("");
+    }
+    if (
+      isMobileMenuOpen &&
+      !event.target.closest(`.${styles.mobileMenu}`) &&
+      !event.target.closest(`.${styles.hamburger}`)
+    ) {
+      setIsMobileMenuOpen(false);
+    }
+  }, [showSearch, isMobileMenuOpen]);
+
+  // Add event listener for clicking outside
+  useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showSearch, isMobileMenuOpen]);
+  }, [handleClickOutside]);
+
+  // Memoize search input handler
+  const handleSearchChange = useCallback((e) => {
+    setSearchQuery(e.target.value);
+  }, []);
 
   return (
     <>
       <nav className={styles.navbar}>
-        <div className={styles.logo}>DeMart</div>
-
-        <ul className={styles.desktopNav}>
-          <li>
-            <Link href="/">Home</Link>
-          </li>
-          <li>
-            <Link href="/shop">Shop</Link>
-          </li>
-          <li>
-            <Link href="/about">About</Link>
-          </li>
-          <li>
-            <Link href="/contact">Contact</Link>
-          </li>
-        </ul>
-
-        <div className={styles.desktopActions}>
-          <div
-            className={styles.searchIcon}
-            onClick={() => setShowSearch(!showSearch)}
-          >
-            <FaSearch />
-          </div>
-          <Link href="/cart" className={styles.cartLink}>
-            <CartIcon />
+        <div className={styles.navContent}>
+          <Link href="/" className={styles.logo}>
+            DeMart
           </Link>
-          <div className={styles.authButtons}>
+
+          <div className={styles.searchContainer}>
+            <input
+              type="text"
+              placeholder="Search products..."
+              className={styles.searchInput}
+              value={searchQuery}
+              onChange={handleSearchChange}
+              onFocus={() => setShowSearch(true)}
+            />
+            <FaSearch className={styles.searchIcon} />
+          </div>
+
+          <div className={styles.navLinks}>
+            <Link href="/shop" className={styles.navLink}>
+              Shop
+            </Link>
+            <Link href="/about" className={styles.navLink}>
+              About
+            </Link>
+            <Link href="/contact" className={styles.navLink}>
+              Contact
+            </Link>
+          </div>
+
+          <div className={styles.navActions}>
+            <CartIcon />
             <button
               className={styles.loginBtn}
               onClick={() => setShowLogin(true)}
@@ -87,95 +100,16 @@ export default function Navbar() {
               Sign Up
             </button>
           </div>
-        </div>
 
-        <button
-          className={styles.hamburger}
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
-        </button>
-
-        <div
-          className={`${styles.mobileMenu} ${
-            isMobileMenuOpen ? styles.active : ""
-          }`}
-        >
           <button
-            className={styles.closeMenuBtn}
-            onClick={() => setIsMobileMenuOpen(false)}
-            aria-label="Close menu"
+            className={styles.hamburger}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
-            ✕
+            {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
           </button>
-          <ul className={styles.mobileNav}>
-            <li>
-              <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
-                Home
-              </Link>
-            </li>
-            <li>
-              <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)}>
-                Shop
-              </Link>
-            </li>
-            <li>
-              <Link href="/about" onClick={() => setIsMobileMenuOpen(false)}>
-                About
-              </Link>
-            </li>
-            <li>
-              <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
-                Contact
-              </Link>
-            </li>
-          </ul>
-
-          <div className={styles.mobileActions}>
-            <div
-              className={styles.searchIcon}
-              onClick={() => {
-                setShowSearch(!showSearch);
-                setIsMobileMenuOpen(false);
-              }}
-            >
-              <FaSearch />
-              <span>Search</span>
-            </div>
-            <Link
-              href="/cart"
-              className={styles.cartLink}
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              <CartIcon />
-              <span>Cart</span>
-            </Link>
-            <div className={styles.mobileAuth}>
-              <button
-                className={styles.loginBtn}
-                onClick={() => {
-                  setShowLogin(true);
-                  setIsMobileMenuOpen(false);
-                }}
-              >
-                Login
-              </button>
-              <button
-                className={styles.signupBtn}
-                onClick={() => {
-                  setShowSignup(true);
-                  setIsMobileMenuOpen(false);
-                }}
-              >
-                Sign Up
-              </button>
-            </div>
-          </div>
         </div>
       </nav>
 
-      {/* Search Popup */}
       {showSearch && (
         <div className={styles.searchPopup}>
           <input
@@ -183,7 +117,7 @@ export default function Navbar() {
             className={styles.searchInput}
             placeholder="Search products..."
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
+            onChange={handleSearchChange}
             autoFocus
           />
           {searchQuery && (
@@ -242,6 +176,43 @@ export default function Navbar() {
               )}
             </div>
           )}
+        </div>
+      )}
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className={styles.mobileMenu}>
+          <nav className={styles.mobileNav}>
+            <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)}>
+              Shop
+            </Link>
+            <Link href="/about" onClick={() => setIsMobileMenuOpen(false)}>
+              About
+            </Link>
+            <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
+              Contact
+            </Link>
+          </nav>
+          <div className={styles.mobileAuth}>
+            <button
+              className={styles.loginBtn}
+              onClick={() => {
+                setShowLogin(true);
+                setIsMobileMenuOpen(false);
+              }}
+            >
+              Login
+            </button>
+            <button
+              className={styles.signupBtn}
+              onClick={() => {
+                setShowSignup(true);
+                setIsMobileMenuOpen(false);
+              }}
+            >
+              Sign Up
+            </button>
+          </div>
         </div>
       )}
 

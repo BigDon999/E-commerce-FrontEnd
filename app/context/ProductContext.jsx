@@ -1,5 +1,5 @@
 "use client";
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useMemo } from 'react';
 
 const initialProducts = [
   {
@@ -149,7 +149,6 @@ export function ProductProvider({ children }) {
 
   useEffect(() => {
     try {
-      console.log('Loading initial products:', initialProducts);
       setProducts(initialProducts);
       setLoading(false);
     } catch (err) {
@@ -159,19 +158,24 @@ export function ProductProvider({ children }) {
     }
   }, []);
 
-  const searchProducts = (query) => {
+  const searchProducts = useCallback((query) => {
     if (!query) return products;
     
     const searchQuery = query.toLowerCase();
-    const filteredProducts = products.filter(product => 
+    return products.filter(product => 
       product.name.toLowerCase().includes(searchQuery)
     );
-    console.log('Search results:', filteredProducts);
-    return filteredProducts;
-  };
+  }, [products]);
+
+  const value = useMemo(() => ({
+    products,
+    loading,
+    error,
+    searchProducts
+  }), [products, loading, error, searchProducts]);
 
   return (
-    <ProductContext.Provider value={{ products, loading, error, searchProducts }}>
+    <ProductContext.Provider value={value}>
       {children}
     </ProductContext.Provider>
   );

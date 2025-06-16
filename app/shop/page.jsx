@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback } from "react";
 import { FaStar } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
+
+const ITEMS_PER_PAGE = 8;
 
 const products = [
   {
@@ -145,20 +147,27 @@ const products = [
 
 const ShopSection = () => {
   const [hoveredCard, setHoveredCard] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
   const { addToCart } = useCart();
 
   const formatPrice = (price) => {
     return `₦${price.toLocaleString()}`;
   };
 
-  const handleAddToCart = (product) => {
+  const handleAddToCart = useCallback((product) => {
     console.log('Adding to cart:', product);
     addToCart(product);
-  };
+  }, [addToCart]);
+
+  // Calculate pagination
+  const totalPages = Math.ceil(products.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const endIndex = startIndex + ITEMS_PER_PAGE;
+  const currentProducts = products.slice(startIndex, endIndex);
 
   // Memoize the product cards to prevent unnecessary re-renders
   const productCards = useMemo(() => {
-    return products.map((product) => (
+    return currentProducts.map((product) => (
       <div
         key={product.id}
         style={{
@@ -298,7 +307,7 @@ const ShopSection = () => {
         </div>
       </div>
     ));
-  }, [hoveredCard, addToCart]);
+  }, [hoveredCard, handleAddToCart, currentProducts]);
 
   return (
     <section
@@ -334,6 +343,54 @@ const ShopSection = () => {
         }}
       >
         {productCards}
+      </div>
+
+      {/* Pagination */}
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          gap: "1rem",
+          marginTop: "3rem",
+        }}
+      >
+        <button
+          onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+          disabled={currentPage === 1}
+          style={{
+            padding: "0.5rem 1rem",
+            border: "none",
+            borderRadius: "4px",
+            background: currentPage === 1 ? "#e0e0e0" : "#ff4da6",
+            color: "white",
+            cursor: currentPage === 1 ? "not-allowed" : "pointer",
+          }}
+        >
+          Previous
+        </button>
+        <span
+          style={{
+            padding: "0.5rem 1rem",
+            background: "#f5f5f5",
+            borderRadius: "4px",
+          }}
+        >
+          Page {currentPage} of {totalPages}
+        </span>
+        <button
+          onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+          disabled={currentPage === totalPages}
+          style={{
+            padding: "0.5rem 1rem",
+            border: "none",
+            borderRadius: "4px",
+            background: currentPage === totalPages ? "#e0e0e0" : "#ff4da6",
+            color: "white",
+            cursor: currentPage === totalPages ? "not-allowed" : "pointer",
+          }}
+        >
+          Next
+        </button>
       </div>
     </section>
   );
