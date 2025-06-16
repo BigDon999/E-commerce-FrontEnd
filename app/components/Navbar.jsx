@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Navbar.module.css";
 import Link from "next/link";
 import CartIcon from "./CartIcon";
@@ -18,13 +18,9 @@ export default function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { searchProducts } = useProducts();
 
-  // Memoize search results
-  const searchResults = useMemo(() => {
-    return searchProducts(searchQuery);
-  }, [searchQuery, searchProducts]);
+  const searchResults = searchProducts(searchQuery);
 
-  // Memoize click outside handler
-  const handleClickOutside = useCallback((event) => {
+  const handleClickOutside = (event) => {
     if (
       showSearch &&
       !event.target.closest(`.${styles.searchPopup}`) &&
@@ -40,18 +36,16 @@ export default function Navbar() {
     ) {
       setIsMobileMenuOpen(false);
     }
-  }, [showSearch, isMobileMenuOpen]);
+  };
 
-  // Add event listener for clicking outside
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [handleClickOutside]);
+  }, [showSearch, isMobileMenuOpen]);
 
-  // Memoize search input handler
-  const handleSearchChange = useCallback((e) => {
+  const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
-  }, []);
+  };
 
   return (
     <>
@@ -134,117 +128,31 @@ export default function Navbar() {
                     }}
                   >
                     <div className={styles.productImage}>
-                      <img
+                      <Image
                         src={product.image}
                         alt={product.name}
-                        style={{
-                          width: '50px',
-                          height: '50px',
-                          objectFit: 'cover',
-                          borderRadius: '4px'
-                        }}
-                        loading="lazy"
-                        decoding="async"
-                        onError={(e) => {
-                          console.error(`Failed to load image: ${product.image}`);
-                          e.target.src = "/assets/placeholder.jpg";
-                        }}
+                        width={50}
+                        height={50}
+                        style={{ objectFit: "cover" }}
                       />
                     </div>
                     <div className={styles.productInfo}>
                       <h4>{product.name}</h4>
-                      <p className={styles.price}>
-                        ₦{product.price.toLocaleString()}
-                      </p>
-                      <div className={styles.rating}>
-                        {[...Array(5)].map((_, i) => (
-                          <span
-                            key={i}
-                            style={{
-                              color: i < product.rating ? "#ffcb47" : "#e0e0e0",
-                            }}
-                          >
-                            ★
-                          </span>
-                        ))}
-                      </div>
+                      <p className={styles.price}>₦{product.price.toLocaleString()}</p>
+                      <p className={styles.description}>{product.description}</p>
                     </div>
                   </Link>
                 ))
               ) : (
-                <div className={styles.noResults}>No products found</div>
+                <p className={styles.noResults}>No products found</p>
               )}
             </div>
           )}
         </div>
       )}
 
-      {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className={styles.mobileMenu}>
-          <nav className={styles.mobileNav}>
-            <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)}>
-              Shop
-            </Link>
-            <Link href="/about" onClick={() => setIsMobileMenuOpen(false)}>
-              About
-            </Link>
-            <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
-              Contact
-            </Link>
-          </nav>
-          <div className={styles.mobileAuth}>
-            <button
-              className={styles.loginBtn}
-              onClick={() => {
-                setShowLogin(true);
-                setIsMobileMenuOpen(false);
-              }}
-            >
-              Login
-            </button>
-            <button
-              className={styles.signupBtn}
-              onClick={() => {
-                setShowSignup(true);
-                setIsMobileMenuOpen(false);
-              }}
-            >
-              Sign Up
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Login Modal */}
-      {showLogin && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <button
-              className={styles.closeBtn}
-              onClick={() => setShowLogin(false)}
-            >
-              ✕
-            </button>
-            <Login />
-          </div>
-        </div>
-      )}
-
-      {/* Sign Up Modal */}
-      {showSignup && (
-        <div className={styles.modalOverlay}>
-          <div className={styles.modalContent}>
-            <button
-              className={styles.closeBtn}
-              onClick={() => setShowSignup(false)}
-            >
-              ✕
-            </button>
-            <SignUp />
-          </div>
-        </div>
-      )}
+      {showLogin && <Login onClose={() => setShowLogin(false)} />}
+      {showSignup && <SignUp onClose={() => setShowSignup(false)} />}
     </>
   );
 }
