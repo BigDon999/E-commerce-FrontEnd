@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google';
 import { ProductProvider } from './context/ProductContext';
 import { CartProvider } from './context/CartContext';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import './globals.css';
 
 const inter = Inter({ 
@@ -28,10 +29,13 @@ export default function RootLayout({ children }) {
       <body>
         <ProductProvider>
           <CartProvider>
-            <Navbar />
-            <main className="min-h-screen pt-16">
-              {children}
-            </main>
+            <div className="flex flex-col min-h-screen">
+              <Navbar />
+              <main className="flex-grow pt-16">
+                {children}
+              </main>
+              <Footer />
+            </div>
           </CartProvider>
         </ProductProvider>
       </body>

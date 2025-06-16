@@ -8,7 +8,6 @@ import Login from "./Login";
 import SignUp from "./SignUp";
 import { FaSearch, FaBars, FaTimes } from "react-icons/fa";
 import { useProducts } from "../context/ProductContext";
-import Image from "next/image";
 
 export default function Navbar() {
   const [showLogin, setShowLogin] = useState(false);
@@ -50,37 +49,26 @@ export default function Navbar() {
   return (
     <>
       <nav className={styles.navbar}>
-        <div className={styles.navContent}>
-          <Link href="/" className={styles.logo}>
-            DeMart
-          </Link>
+        <Link href="/" className={styles.logo}>
+          DeMart
+        </Link>
 
-          <div className={styles.searchContainer}>
-            <input
-              type="text"
-              placeholder="Search products..."
-              className={styles.searchInput}
-              value={searchQuery}
-              onChange={handleSearchChange}
-              onFocus={() => setShowSearch(true)}
-            />
-            <FaSearch className={styles.searchIcon} />
+        <ul className={styles.desktopNav}>
+          <li><Link href="/shop">Shop</Link></li>
+          <li><Link href="/about">About</Link></li>
+          <li><Link href="/contact">Contact</Link></li>
+        </ul>
+
+        <div className={styles.desktopActions}>
+          <div className={styles.searchIcon} onClick={() => setShowSearch(true)}>
+            <FaSearch />
+            <span>Search</span>
           </div>
-
-          <div className={styles.navLinks}>
-            <Link href="/shop" className={styles.navLink}>
-              Shop
-            </Link>
-            <Link href="/about" className={styles.navLink}>
-              About
-            </Link>
-            <Link href="/contact" className={styles.navLink}>
-              Contact
-            </Link>
-          </div>
-
-          <div className={styles.navActions}>
+          <Link href="/cart" className={styles.cartLink}>
             <CartIcon />
+            <span>Cart</span>
+          </Link>
+          <div className={styles.authButtons}>
             <button
               className={styles.loginBtn}
               onClick={() => setShowLogin(true)}
@@ -94,14 +82,14 @@ export default function Navbar() {
               Sign Up
             </button>
           </div>
-
-          <button
-            className={styles.hamburger}
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
-          </button>
         </div>
+
+        <button
+          className={styles.hamburger}
+          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+        >
+          {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+        </button>
       </nav>
 
       {showSearch && (
@@ -173,7 +161,6 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* Mobile Menu */}
       {isMobileMenuOpen && (
         <div className={styles.mobileMenu}>
           <nav className={styles.mobileNav}>
@@ -187,6 +174,19 @@ export default function Navbar() {
               Contact
             </Link>
           </nav>
+          <div className={styles.mobileActions}>
+            <div className={styles.searchIcon} onClick={() => {
+              setShowSearch(true);
+              setIsMobileMenuOpen(false);
+            }}>
+              <FaSearch />
+              <span>Search</span>
+            </div>
+            <Link href="/cart" className={styles.cartLink}>
+              <CartIcon />
+              <span>Cart</span>
+            </Link>
+          </div>
           <div className={styles.mobileAuth}>
             <button
               className={styles.loginBtn}
@@ -210,7 +210,6 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* Login Modal */}
       {showLogin && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -225,7 +224,6 @@ export default function Navbar() {
         </div>
       )}
 
-      {/* Sign Up Modal */}
       {showSignup && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
