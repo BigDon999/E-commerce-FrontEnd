@@ -1,5 +1,5 @@
 export const products = [
-         {
+  {
     id: 1,
     name: "Men's Jacket",
     price: 12000,
@@ -135,6 +135,4 @@ export const products = [
     featured: false,
     image: "/assets/dress.jpg",
   },
-
-
-]
+];

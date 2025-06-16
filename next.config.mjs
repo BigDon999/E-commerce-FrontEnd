@@ -1,4 +1,9 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
+const nextConfig = {
+  images: {
+    domains: ['localhost', 'e-commerce-front-end-black.vercel.app'],
+    unoptimized: true,
+  },
+};
 
 export default nextConfig;

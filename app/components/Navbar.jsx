@@ -200,12 +200,19 @@ export default function Navbar() {
                     }}
                   >
                     <div className={styles.productImage}>
-                      <Image
+                      <img
                         src={product.image}
                         alt={product.name}
-                        width={50}
-                        height={50}
-                        style={{ objectFit: "cover" }}
+                        style={{
+                          width: '50px',
+                          height: '50px',
+                          objectFit: 'cover',
+                          borderRadius: '4px'
+                        }}
+                        onError={(e) => {
+                          console.error(`Failed to load image: ${product.image}`);
+                          e.target.src = "/assets/placeholder.jpg";
+                        }}
                       />
                     </div>
                     <div className={styles.productInfo}>

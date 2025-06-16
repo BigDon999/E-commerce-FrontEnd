@@ -11,6 +11,7 @@ export function ProductProvider({ children }) {
 
   useEffect(() => {
     try {
+      console.log('Loading initial products:', initialProducts);
       setProducts(initialProducts);
       setLoading(false);
     } catch (err) {
@@ -24,9 +25,11 @@ export function ProductProvider({ children }) {
     if (!query) return products;
     
     const searchQuery = query.toLowerCase();
-    return products.filter(product => 
+    const filteredProducts = products.filter(product => 
       product.name.toLowerCase().includes(searchQuery)
     );
+    console.log('Search results:', filteredProducts);
+    return filteredProducts;
   };
 
   return (

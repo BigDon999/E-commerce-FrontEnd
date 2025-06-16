@@ -5,7 +5,7 @@ export const products = [
     price: 199.99,
     description: "High-quality wireless headphones with noise cancellation and premium sound quality.",
     category: "Electronics",
-    image: "/images/headphones.jpg",
+    image: "/assets/headphones.jpg",
     rating: 4.5
   },
   {
@@ -14,7 +14,7 @@ export const products = [
     price: 149.99,
     description: "Track your fitness goals with this advanced smartwatch featuring heart rate monitoring and GPS.",
     category: "Electronics",
-    image: "/images/smartwatch.jpg",
+    image: "/assets/smartwatch.jpg",
     rating: 4.3
   },
   {
@@ -23,7 +23,7 @@ export const products = [
     price: 79.99,
     description: "Stylish and durable backpack perfect for work or travel with multiple compartments.",
     category: "Fashion",
-    image: "/images/backpack.jpg",
+    image: "/assets/backpack.jpg",
     rating: 4.7
   },
   {
@@ -32,7 +32,7 @@ export const products = [
     price: 899.99,
     description: "High-resolution camera with advanced features for professional photography.",
     category: "Electronics",
-    image: "/images/camera.jpg",
+    image: "/assets/camera.jpg",
     rating: 4.8
   },
   {
@@ -41,7 +41,7 @@ export const products = [
     price: 89.99,
     description: "Comfortable and lightweight running shoes with excellent support and cushioning.",
     category: "Sports",
-    image: "/images/shoes.jpg",
+    image: "/assets/sheos.jpg",
     rating: 4.6
   }
 ]; 

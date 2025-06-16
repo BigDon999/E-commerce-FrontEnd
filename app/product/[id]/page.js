@@ -5,7 +5,6 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { useProducts } from '../../context/ProductContext';
 import { useCart } from '../../context/CartContext';
-import Image from 'next/image';
 import styles from './page.module.css';
 
 export default function ProductDetail() {
@@ -27,13 +26,19 @@ export default function ProductDetail() {
     <div className={styles.container}>
       <div className={styles.productContainer}>
         <div className={styles.imageContainer}>
-          <Image
+          <img
             src={product.image}
             alt={product.name}
-            width={500}
-            height={500}
-            style={{ objectFit: 'cover' }}
-            className={styles.productImage}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              borderRadius: '8px'
+            }}
+            onError={(e) => {
+              console.error(`Failed to load product image: ${product.image}`);
+              e.target.src = "/assets/placeholder.jpg";
+            }}
           />
         </div>
         
