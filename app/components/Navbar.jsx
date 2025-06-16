@@ -66,7 +66,6 @@ export default function Navbar() {
           </div>
           <Link href="/cart" className={styles.cartLink}>
             <CartIcon />
-            <span>Cart</span>
           </Link>
           <div className={styles.authButtons}>
             <button
