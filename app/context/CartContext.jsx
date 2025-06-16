@@ -16,31 +16,37 @@ const CartContext = createContext({
   setShippingAddress: () => {},
 });
 
+const DEFAULT_CART = [];
+
 export function CartProvider({ children }) {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState(DEFAULT_CART);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [shippingAddress, setShippingAddress] = useState(null);
 
+  // Initialize cart from localStorage
   useEffect(() => {
-    try {
-      const savedCart = localStorage.getItem('cart');
-      if (savedCart) {
-        const parsedCart = JSON.parse(savedCart);
-        if (Array.isArray(parsedCart)) {
-          setCart(parsedCart);
-        } else {
-          setCart([]);
+    const initializeCart = () => {
+      try {
+        const savedCart = localStorage.getItem('cart');
+        if (savedCart) {
+          const parsedCart = JSON.parse(savedCart);
+          if (Array.isArray(parsedCart)) {
+            setCart(parsedCart);
+          }
         }
+      } catch (err) {
+        console.error('Error loading cart:', err);
+        setCart(DEFAULT_CART);
+      } finally {
+        setLoading(false);
       }
-    } catch (err) {
-      console.error('Error loading cart:', err);
-      setCart([]);
-    } finally {
-      setLoading(false);
-    }
+    };
+
+    initializeCart();
   }, []);
 
+  // Save cart to localStorage
   useEffect(() => {
     if (!loading) {
       try {
@@ -63,7 +69,7 @@ export function CartProvider({ children }) {
   }, [shippingAddress]);
 
   const addToCart = useCallback((product) => {
-    if (!product) return;
+    if (!product?.id) return;
     
     setCart(prevCart => {
       const existingItem = prevCart.find(item => item.id === product.id);
@@ -94,7 +100,7 @@ export function CartProvider({ children }) {
   }, []);
 
   const clearCart = useCallback(() => {
-    setCart([]);
+    setCart(DEFAULT_CART);
   }, []);
 
   const cartTotal = useMemo(() => {

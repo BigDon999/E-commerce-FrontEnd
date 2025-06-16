@@ -9,8 +9,6 @@ const nextConfig = {
   productionBrowserSourceMaps: true,
   // Enable compression
   compress: true,
-  // Enable SWC minification
-  swcMinify: true,
   // Configure webpack for better performance
   webpack: (config, { dev, isServer }) => {
     // Optimize bundle size
