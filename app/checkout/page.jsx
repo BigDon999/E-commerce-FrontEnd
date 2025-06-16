@@ -9,7 +9,7 @@ import ShippingAddress from "../components/ShippingAddress";
 
 const CheckoutPage = () => {
   const router = useRouter();
-  const { cartItems, shippingAddress, setShippingAddress } = useCart();
+  const { cartItems, shippingAddress, setShippingAddress, clearCart } = useCart();
   const [showAddressModal, setShowAddressModal] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Pay on Delivery");
   const [cardDetails, setCardDetails] = useState({
@@ -59,9 +59,18 @@ const CheckoutPage = () => {
   };
 
   const handlePlaceOrder = () => {
+    console.log('Place order button clicked');
+    console.log('Current cart items:', cartItems);
+    console.log('Current shipping address:', shippingAddress);
+
     // Validate required fields
     if (!shippingAddress) {
       alert("Please add a shipping address");
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      alert("Your cart is empty");
       return;
     }
 
@@ -75,7 +84,10 @@ const CheckoutPage = () => {
 
     // Create order data
     const orderData = {
-      items: cartItems,
+      items: cartItems.map(item => ({
+        ...item,
+        quantity: item.quantity || 1
+      })),
       shippingAddress,
       paymentMethod,
       cardDetails: paymentMethod === "Pay with Card" ? cardDetails : null,
@@ -84,9 +96,19 @@ const CheckoutPage = () => {
       status: "pending"
     };
 
+    console.log('Creating order with data:', orderData);
+
     // Save order to localStorage
     try {
-      localStorage.setItem('currentOrder', JSON.stringify(orderData));
+      const orderString = JSON.stringify(orderData);
+      console.log('Order data to be saved:', orderString);
+      localStorage.setItem('currentOrder', orderString);
+      console.log('Order saved to localStorage');
+      
+      // Clear the cart after successful order placement
+      clearCart();
+      console.log('Cart cleared');
+      
       // Navigate to order page
       router.push('/order');
     } catch (error) {
@@ -101,9 +123,15 @@ const CheckoutPage = () => {
 
       <section className={styles.section}>
         <h3>Order Summary</h3>
-        <p>Items Total: <strong>₦{cartTotal.toLocaleString()}</strong></p>
-        <p>Shipping Fee: <strong>₦2,000</strong></p>
-        <p className={styles.total}>Total: <strong>₦{(cartTotal + 2000).toLocaleString()}</strong></p>
+        {cartItems.length === 0 ? (
+          <p>Your cart is empty</p>
+        ) : (
+          <>
+            <p>Items Total: <strong>₦{cartTotal.toLocaleString()}</strong></p>
+            <p>Shipping Fee: <strong>₦2,000</strong></p>
+            <p className={styles.total}>Total: <strong>₦{(cartTotal + 2000).toLocaleString()}</strong></p>
+          </>
+        )}
       </section>
 
       <section className={styles.section}>

@@ -1,13 +1,13 @@
 "use client";
-
-import React, { useState, useEffect } from "react";
-import styles from "./Navbar.module.css";
+import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import { FaSearch, FaBars, FaTimes } from "react-icons/fa";
+import { useProducts } from "../context/ProductContext";
+import { useCart } from "../context/CartContext";
+import styles from "./Navbar.module.css";
 import CartIcon from "./CartIcon";
 import Login from "./Login";
 import SignUp from "./SignUp";
-import { FaSearch, FaBars, FaTimes } from "react-icons/fa";
-import { useProducts } from "../context/ProductContext";
 
 export default function Navbar() {
   const [showLogin, setShowLogin] = useState(false);
@@ -16,35 +16,29 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { searchProducts } = useProducts();
+  const { cartItems } = useCart();
+  const searchRef = useRef(null);
 
   const searchResults = searchProducts(searchQuery);
-
-  const handleClickOutside = (event) => {
-    if (
-      showSearch &&
-      !event.target.closest(`.${styles.searchPopup}`) &&
-      !event.target.closest(`.${styles.searchIcon}`)
-    ) {
-      setShowSearch(false);
-      setSearchQuery("");
-    }
-    if (
-      isMobileMenuOpen &&
-      !event.target.closest(`.${styles.mobileMenu}`) &&
-      !event.target.closest(`.${styles.hamburger}`)
-    ) {
-      setIsMobileMenuOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showSearch, isMobileMenuOpen]);
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value);
   };
+
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (
+        showSearch &&
+        searchRef.current &&
+        !searchRef.current.contains(event.target)
+      ) {
+        setShowSearch(false);
+        setSearchQuery("");
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showSearch]);
 
   return (
     <>
@@ -54,19 +48,34 @@ export default function Navbar() {
         </Link>
 
         <ul className={styles.desktopNav}>
-          <li><Link href="/">Home</Link></li>
-          <li><Link href="/shop">Shop</Link></li>
-          <li><Link href="/about">About</Link></li>
-          <li><Link href="/contact">Contact</Link></li>
+          <li>
+            <Link href="/">Home</Link>
+          </li>
+          <li>
+            <Link href="/shop">Shop</Link>
+          </li>
+          <li>
+            <Link href="/about">About</Link>
+          </li>
+          <li>
+            <Link href="/contact">Contact</Link>
+          </li>
         </ul>
 
         <div className={styles.desktopActions}>
-          <div className={styles.searchIcon} onClick={() => setShowSearch(true)}>
+          <div
+            className={styles.searchIcon}
+            onClick={() => setShowSearch(!showSearch)}
+          >
             <FaSearch />
-            <span>Search</span>
           </div>
           <Link href="/cart" className={styles.cartLink}>
-            <CartIcon />
+            <div className={styles.cartIconWrapper}>
+              <CartIcon />
+              {cartItems.length > 0 && (
+                <span className={styles.cartCount}>{cartItems.length}</span>
+              )}
+            </div>
           </Link>
           <div className={styles.authButtons}>
             <button
@@ -86,14 +95,99 @@ export default function Navbar() {
 
         <button
           className={styles.hamburger}
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+          onClick={() => setIsMobileMenuOpen(true)}
+          aria-label="Open menu"
         >
-          {isMobileMenuOpen ? <FaTimes /> : <FaBars />}
+          <FaBars />
         </button>
       </nav>
 
+      <div
+        className={`${styles.mobileMenu} ${
+          isMobileMenuOpen ? styles.mobileMenuOpen : ""
+        }`}
+      >
+        <button
+          className={styles.closeMenuBtn}
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-label="Close menu"
+        >
+          <FaTimes />
+        </button>
+        <div className={styles.mobileMenuContent}>
+          <ul className={styles.mobileNav}>
+            <li>
+              <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
+                Home
+              </Link>
+            </li>
+            <li>
+              <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)}>
+                Shop
+              </Link>
+            </li>
+            <li>
+              <Link href="/about" onClick={() => setIsMobileMenuOpen(false)}>
+                About
+              </Link>
+            </li>
+            <li>
+              <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
+                Contact
+              </Link>
+            </li>
+          </ul>
+
+          <div className={styles.mobileActions}>
+            <button
+              className={styles.mobileSearchBtn}
+              onClick={() => {
+                setShowSearch(true);
+                setIsMobileMenuOpen(false);
+              }}
+            >
+              <FaSearch />
+            </button>
+            <Link
+              href="/cart"
+              className={styles.mobileCartBtn}
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <div className={styles.cartIconWrapper}>
+                <CartIcon />
+                {cartItems.length > 0 && (
+                  <span className={styles.cartCount}>{cartItems.length}</span>
+                )}
+              </div>
+            </Link>
+          </div>
+
+          <div className={styles.mobileAuth}>
+            <button
+              className={styles.loginBtn}
+              onClick={() => {
+                setShowLogin(true);
+                setIsMobileMenuOpen(false);
+              }}
+            >
+              Login
+            </button>
+            <button
+              className={styles.signupBtn}
+              onClick={() => {
+                setShowSignup(true);
+                setIsMobileMenuOpen(false);
+              }}
+            >
+              Sign Up
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Search Popup with Full Functionality */}
       {showSearch && (
-        <div className={styles.searchPopup}>
+        <div className={styles.searchPopup} ref={searchRef}>
           <input
             type="text"
             className={styles.searchInput}
@@ -119,17 +213,11 @@ export default function Navbar() {
                       <img
                         src={product.image}
                         alt={product.name}
+                        width={50}
+                        height={50}
                         style={{
-                          width: '50px',
-                          height: '50px',
-                          objectFit: 'cover',
-                          borderRadius: '4px'
-                        }}
-                        loading="lazy"
-                        decoding="async"
-                        onError={(e) => {
-                          console.error(`Failed to load image: ${product.image}`);
-                          e.target.src = "/assets/placeholder.jpg";
+                          objectFit: "cover",
+                          borderRadius: "4px",
                         }}
                       />
                     </div>
@@ -138,18 +226,6 @@ export default function Navbar() {
                       <p className={styles.price}>
                         ₦{product.price.toLocaleString()}
                       </p>
-                      <div className={styles.rating}>
-                        {[...Array(5)].map((_, i) => (
-                          <span
-                            key={i}
-                            style={{
-                              color: i < product.rating ? "#ffcb47" : "#e0e0e0",
-                            }}
-                          >
-                            ★
-                          </span>
-                        ))}
-                      </div>
                     </div>
                   </Link>
                 ))
@@ -161,58 +237,7 @@ export default function Navbar() {
         </div>
       )}
 
-      {isMobileMenuOpen && (
-        <div className={styles.mobileMenu}>
-          <nav className={styles.mobileNav}>
-            <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
-              Home
-            </Link>
-            <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)}>
-              Shop
-            </Link>
-            <Link href="/about" onClick={() => setIsMobileMenuOpen(false)}>
-              About
-            </Link>
-            <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
-              Contact
-            </Link>
-          </nav>
-          <div className={styles.mobileActions}>
-            <div className={styles.searchIcon} onClick={() => {
-              setShowSearch(true);
-              setIsMobileMenuOpen(false);
-            }}>
-              <FaSearch />
-              <span>Search</span>
-            </div>
-            <Link href="/cart" className={styles.cartLink}>
-              <CartIcon />
-              <span>Cart</span>
-            </Link>
-          </div>
-          <div className={styles.mobileAuth}>
-            <button
-              className={styles.loginBtn}
-              onClick={() => {
-                setShowLogin(true);
-                setIsMobileMenuOpen(false);
-              }}
-            >
-              Login
-            </button>
-            <button
-              className={styles.signupBtn}
-              onClick={() => {
-                setShowSignup(true);
-                setIsMobileMenuOpen(false);
-              }}
-            >
-              Sign Up
-            </button>
-          </div>
-        </div>
-      )}
-
+      {/* Auth Modals */}
       {showLogin && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
@@ -222,7 +247,7 @@ export default function Navbar() {
             >
               ✕
             </button>
-            <Login />
+            <Login setShowLogin={setShowLogin} setShowSignup={setShowSignup} />
           </div>
         </div>
       )}
@@ -236,7 +261,7 @@ export default function Navbar() {
             >
               ✕
             </button>
-            <SignUp />
+            <SignUp setShowLogin={setShowLogin} setShowSignup={setShowSignup} />
           </div>
         </div>
       )}

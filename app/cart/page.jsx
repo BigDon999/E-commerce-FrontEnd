@@ -9,7 +9,13 @@ import ShippingAddress from "../components/ShippingAddress";
 import styles from "./CartPage.module.css";
 
 const CartPage = () => {
-  const { cartItems, setCartItems, shippingAddress, setShippingAddress } = useCart();
+  const {
+    cartItems,
+    removeFromCart,
+    updateQuantity,
+    shippingAddress,
+    setShippingAddress,
+  } = useCart();
   const [isLoading, setIsLoading] = useState(true);
   const [showAddressModal, setShowAddressModal] = useState(false);
   const router = useRouter();
@@ -19,19 +25,15 @@ const CartPage = () => {
   }, []);
 
   const handleQuantityChange = (id, change) => {
-    setCartItems((prev) =>
-      prev
-        .map((item) =>
-          item.id === id
-            ? { ...item, quantity: Math.max(1, (item.quantity || 1) + change) }
-            : item
-        )
-        .filter((item) => item.quantity > 0)
-    );
+    const item = cartItems.find((item) => item.id === id);
+    if (item) {
+      const newQuantity = Math.max(1, (item.quantity || 1) + change);
+      updateQuantity(id, newQuantity);
+    }
   };
 
   const handleRemove = (id) => {
-    setCartItems((prev) => prev.filter((item) => item.id !== id));
+    removeFromCart(id);
   };
 
   const cartTotal = cartItems.reduce(
@@ -51,6 +53,11 @@ const CartPage = () => {
       </div>
     );
   }
+
+  const cartCount = cartItems.reduce(
+    (acc, item) => acc + (item.quantity || 1),
+    0
+  );
 
   return (
     <section className={styles.cartContainer}>
@@ -83,14 +90,14 @@ const CartPage = () => {
                   <h4>{item.name}</h4>
                   <p>₦{item.price.toLocaleString()}</p>
                   <div className={styles.controls}>
-                    <button 
+                    <button
                       onClick={() => handleQuantityChange(item.id, -1)}
                       className={styles.quantityBtn}
                     >
                       -
                     </button>
                     <span>{item.quantity || 1}</span>
-                    <button 
+                    <button
                       onClick={() => handleQuantityChange(item.id, 1)}
                       className={styles.quantityBtn}
                     >
@@ -116,23 +123,38 @@ const CartPage = () => {
           <div className={styles.summary}>
             <h3>Cart Summary</h3>
             <div className={styles.summaryDetails}>
-              <p>Subtotal: <strong>₦{cartTotal.toLocaleString()}</strong></p>
-              <p>Shipping: <strong>₦2,000</strong></p>
-              <p className={styles.total}>Total: <strong>₦{(cartTotal + 2000).toLocaleString()}</strong></p>
+              <p>
+                Subtotal: <strong>₦{cartTotal.toLocaleString()}</strong>
+              </p>
+              <p>
+                Shipping: <strong>₦2,000</strong>
+              </p>
+              <p className={styles.total}>
+                Total: <strong>₦{(cartTotal + 2000).toLocaleString()}</strong>
+              </p>
             </div>
 
             <p className={styles.addressLabel}>
-              Shipping Address: <strong>{shippingAddress ? `${shippingAddress.addressLine}, ${shippingAddress.city}, ${shippingAddress.state}` : "Not Set"}</strong>
+              Shipping Address:{" "}
+              <strong>
+                {shippingAddress
+                  ? `${shippingAddress.addressLine}, ${shippingAddress.city}, ${shippingAddress.state}`
+                  : "Not Set"}
+              </strong>
             </p>
 
-            <button 
-              onClick={() => setShowAddressModal(true)} 
+            <button
+              onClick={() => setShowAddressModal(true)}
               className={styles.addressBtn}
             >
-              {shippingAddress ? "Change Shipping Address" : "Add Shipping Address"}
+              {shippingAddress
+                ? "Change Shipping Address"
+                : "Add Shipping Address"}
             </button>
 
-            <button onClick={handleCheckout} className={styles.checkoutBtn}>Proceed to Checkout</button>
+            <button onClick={handleCheckout} className={styles.checkoutBtn}>
+              Proceed to Checkout
+            </button>
             <Link href="/shop" className={styles.continueShopping}>
               Continue Shopping
             </Link>
@@ -147,9 +169,9 @@ const CartPage = () => {
           onSave={setShippingAddress}
         />
       )}
+
     </section>
   );
 };
 
 export default CartPage;
-

@@ -53,6 +53,8 @@ export function CartProvider({ children }) {
     localStorage.removeItem("cart");
   };
 
+  const cartCount = cartItems.reduce((total, item) => total + (item.quantity || 1), 0);
+
   return (
     <CartContext.Provider
       value={{
@@ -63,6 +65,7 @@ export function CartProvider({ children }) {
         clearCart,
         shippingAddress,
         setShippingAddress,
+        cartCount,
       }}
     >
       {children}

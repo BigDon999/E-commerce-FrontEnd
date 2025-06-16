@@ -5,22 +5,23 @@ import Footer from "./components/Footer";
 import { CartProvider } from "./context/CartContext";
 import { ProductProvider } from "./context/ProductContext";
 
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: 'MyShop - Your Online Store',
-  description: 'Shop the latest trends in fashion, electronics, and more',
+  title: "MyShop - Your Online Store",
+  description: "Shop the latest trends in fashion, electronics, and more",
 };
 
 export const viewport = {
-  width: 'device-width',
+  width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+   
+      <body >
         <ProductProvider>
           <CartProvider>
             <Navbar />
@@ -29,6 +30,6 @@ export default function RootLayout({ children }) {
           </CartProvider>
         </ProductProvider>
       </body>
-    </html>
+   
   );
 }

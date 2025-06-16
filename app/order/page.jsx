@@ -13,13 +13,18 @@ const OrderPage = () => {
   useEffect(() => {
     // Get order from localStorage
     const orderData = localStorage.getItem('currentOrder');
+    console.log('Retrieved order data:', orderData);
+    
     if (!orderData) {
+      console.log('No order data found');
       router.push('/cart');
       return;
     }
 
     try {
-      setOrder(JSON.parse(orderData));
+      const parsedOrder = JSON.parse(orderData);
+      console.log('Parsed order:', parsedOrder);
+      setOrder(parsedOrder);
     } catch (error) {
       console.error('Error parsing order data:', error);
       router.push('/cart');
@@ -66,24 +71,28 @@ const OrderPage = () => {
       <section className={styles.section}>
         <h2>Order Details</h2>
         <div className={styles.itemsList}>
-          {order.items.map((item, index) => (
-            <div key={index} className={styles.orderItem}>
-              <img 
-                src={item.image} 
-                alt={item.name} 
-                className={styles.itemImage}
-                onError={(e) => {
-                  e.target.onerror = null;
-                  e.target.src = '/placeholder.png';
-                }}
-              />
-              <div className={styles.itemDetails}>
-                <h3>{item.name}</h3>
-                <p>Quantity: {item.quantity}</p>
-                <p>Price: ₦{item.price.toLocaleString()}</p>
+          {order.items && order.items.length > 0 ? (
+            order.items.map((item, index) => (
+              <div key={index} className={styles.orderItem}>
+                <img 
+                  src={item.image} 
+                  alt={item.name} 
+                  className={styles.itemImage}
+                  onError={(e) => {
+                    e.target.onerror = null;
+                    e.target.src = '/placeholder.png';
+                  }}
+                />
+                <div className={styles.itemDetails}>
+                  <h3>{item.name}</h3>
+                  <p>Quantity: {item.quantity || 1}</p>
+                  <p>Price: ₦{item.price.toLocaleString()}</p>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p>No items found in this order.</p>
+          )}
         </div>
       </section>
 
