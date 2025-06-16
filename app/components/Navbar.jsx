@@ -128,31 +128,117 @@ export default function Navbar() {
                     }}
                   >
                     <div className={styles.productImage}>
-                      <Image
+                      <img
                         src={product.image}
                         alt={product.name}
-                        width={50}
-                        height={50}
-                        style={{ objectFit: "cover" }}
+                        style={{
+                          width: '50px',
+                          height: '50px',
+                          objectFit: 'cover',
+                          borderRadius: '4px'
+                        }}
+                        loading="lazy"
+                        decoding="async"
+                        onError={(e) => {
+                          console.error(`Failed to load image: ${product.image}`);
+                          e.target.src = "/assets/placeholder.jpg";
+                        }}
                       />
                     </div>
                     <div className={styles.productInfo}>
                       <h4>{product.name}</h4>
-                      <p className={styles.price}>₦{product.price.toLocaleString()}</p>
-                      <p className={styles.description}>{product.description}</p>
+                      <p className={styles.price}>
+                        ₦{product.price.toLocaleString()}
+                      </p>
+                      <div className={styles.rating}>
+                        {[...Array(5)].map((_, i) => (
+                          <span
+                            key={i}
+                            style={{
+                              color: i < product.rating ? "#ffcb47" : "#e0e0e0",
+                            }}
+                          >
+                            ★
+                          </span>
+                        ))}
+                      </div>
                     </div>
                   </Link>
                 ))
               ) : (
-                <p className={styles.noResults}>No products found</p>
+                <div className={styles.noResults}>No products found</div>
               )}
             </div>
           )}
         </div>
       )}
 
-      {showLogin && <Login onClose={() => setShowLogin(false)} />}
-      {showSignup && <SignUp onClose={() => setShowSignup(false)} />}
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className={styles.mobileMenu}>
+          <nav className={styles.mobileNav}>
+            <Link href="/shop" onClick={() => setIsMobileMenuOpen(false)}>
+              Shop
+            </Link>
+            <Link href="/about" onClick={() => setIsMobileMenuOpen(false)}>
+              About
+            </Link>
+            <Link href="/contact" onClick={() => setIsMobileMenuOpen(false)}>
+              Contact
+            </Link>
+          </nav>
+          <div className={styles.mobileAuth}>
+            <button
+              className={styles.loginBtn}
+              onClick={() => {
+                setShowLogin(true);
+                setIsMobileMenuOpen(false);
+              }}
+            >
+              Login
+            </button>
+            <button
+              className={styles.signupBtn}
+              onClick={() => {
+                setShowSignup(true);
+                setIsMobileMenuOpen(false);
+              }}
+            >
+              Sign Up
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Login Modal */}
+      {showLogin && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <button
+              className={styles.closeBtn}
+              onClick={() => setShowLogin(false)}
+            >
+              ✕
+            </button>
+            <Login />
+          </div>
+        </div>
+      )}
+
+      {/* Sign Up Modal */}
+      {showSignup && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <button
+              className={styles.closeBtn}
+              onClick={() => setShowSignup(false)}
+            >
+              ✕
+            </button>
+            <SignUp />
+          </div>
+        </div>
+      )}
     </>
   );
 }
