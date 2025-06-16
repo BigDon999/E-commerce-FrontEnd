@@ -209,6 +209,8 @@ export default function Navbar() {
                           objectFit: 'cover',
                           borderRadius: '4px'
                         }}
+                        loading="lazy"
+                        decoding="async"
                         onError={(e) => {
                           console.error(`Failed to load image: ${product.image}`);
                           e.target.src = "/assets/placeholder.jpg";

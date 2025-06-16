@@ -1,7 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
-import Image from "next/image";
+import React, { useState, useMemo } from "react";
 import { FaStar } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
 
@@ -157,6 +156,150 @@ const ShopSection = () => {
     addToCart(product);
   };
 
+  // Memoize the product cards to prevent unnecessary re-renders
+  const productCards = useMemo(() => {
+    return products.map((product) => (
+      <div
+        key={product.id}
+        style={{
+          background: "white",
+          borderRadius: "12px",
+          overflow: "hidden",
+          boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
+          transition: "all 0.3s ease",
+          width: "280px",
+          textAlign: "center",
+          transform: hoveredCard === product.id ? "translateY(-5px)" : "none",
+          boxShadow: hoveredCard === product.id
+            ? "0 10px 25px rgba(0, 0, 0, 0.2)"
+            : "0 4px 20px rgba(0, 0, 0, 0.1)",
+        }}
+        onMouseEnter={() => setHoveredCard(product.id)}
+        onMouseLeave={() => setHoveredCard(null)}
+      >
+        <div
+          style={{
+            position: "relative",
+            width: "100%",
+            height: "300px",
+          }}
+        >
+          {product.featured && (
+            <span
+              style={{
+                position: "absolute",
+                top: "10px",
+                left: "10px",
+                backgroundColor: "#ff4da6",
+                color: "white",
+                padding: "4px 10px",
+                borderRadius: "6px",
+                fontSize: "0.8rem",
+                fontWeight: "bold",
+                zIndex: 2,
+              }}
+            >
+              Featured
+            </span>
+          )}
+          <img
+            src={product.image}
+            alt={product.name}
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              transform: hoveredCard === product.id ? "scale(1.05)" : "scale(1)",
+              transition: "transform 0.5s ease",
+            }}
+            loading="lazy"
+            decoding="async"
+            onError={(e) => {
+              console.error(`Failed to load image: ${product.image}`);
+              e.target.src = "/assets/placeholder.jpg";
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              background: "rgba(255, 255, 255, 0.95)",
+              padding: "1.5rem",
+              transform: hoveredCard === product.id
+                ? "translateY(0)"
+                : "translateY(100%)",
+              transition: "transform 0.3s ease",
+              textAlign: "center",
+            }}
+          >
+            <h3
+              style={{
+                fontSize: "1.2rem",
+                marginBottom: "0.5rem",
+                color: "#333",
+                fontWeight: "600",
+              }}
+            >
+              {product.name}
+            </h3>
+
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "0.25rem",
+                marginBottom: "0.5rem",
+              }}
+            >
+              {[...Array(5)].map((_, i) => (
+                <FaStar
+                  key={i}
+                  style={{
+                    color: i < product.rating ? "#ffcb47" : "#e0e0e0",
+                    fontSize: "1rem",
+                  }}
+                />
+              ))}
+            </div>
+
+            <p
+              style={{
+                fontSize: "1.3rem",
+                fontWeight: "700",
+                color: "#e83e8c",
+                margin: "0.75rem 0",
+              }}
+            >
+              {formatPrice(product.price)}
+            </p>
+
+            <button
+              onClick={() => handleAddToCart(product)}
+              style={{
+                background: "#e83e8c",
+                color: "white",
+                border: "none",
+                padding: "0.75rem 1.5rem",
+                borderRadius: "6px",
+                fontWeight: "600",
+                cursor: "pointer",
+                transition: "all 0.2s ease",
+                width: "100%",
+                maxWidth: "200px",
+                margin: "0 auto",
+                display: "block",
+              }}
+            >
+              Add to Cart
+            </button>
+          </div>
+        </div>
+      </div>
+    ));
+  }, [hoveredCard, addToCart]);
+
   return (
     <section
       style={{
@@ -190,143 +333,7 @@ const ShopSection = () => {
           placeItems: "center",
         }}
       >
-        {products.map((product) => (
-          <div
-            key={product.id}
-            style={{
-              background: "white",
-              borderRadius: "12px",
-              overflow: "hidden",
-              boxShadow: "0 4px 20px rgba(0, 0, 0, 0.1)",
-              transition: "all 0.3s ease",
-              width: "280px",
-              textAlign: "center",
-              transform:
-                hoveredCard === product.id ? "translateY(-5px)" : "none",
-              boxShadow:
-                hoveredCard === product.id
-                  ? "0 10px 25px rgba(0, 0, 0, 0.2)"
-                  : "0 4px 20px rgba(0, 0, 0, 0.1)",
-            }}
-            onMouseEnter={() => setHoveredCard(product.id)}
-            onMouseLeave={() => setHoveredCard(null)}
-          >
-            <div
-              style={{
-                position: "relative",
-                width: "100%",
-                height: "300px",
-              }}
-            >
-              {product.featured && (
-                <span
-                  style={{
-                    position: "absolute",
-                    top: "10px",
-                    left: "10px",
-                    backgroundColor: "#ff4da6",
-                    color: "white",
-                    padding: "4px 10px",
-                    borderRadius: "6px",
-                    fontSize: "0.8rem",
-                    fontWeight: "bold",
-                    zIndex: 2,
-                  }}
-                >
-                  Featured
-                </span>
-              )}
-              <Image
-                src={product.image}
-                alt={product.name}
-                fill
-                style={{
-                  objectFit: "cover",
-                  transform:
-                    hoveredCard === product.id ? "scale(1.05)" : "scale(1)",
-                  transition: "transform 0.5s ease",
-                }}
-              />
-              <div
-                style={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  background: "rgba(255, 255, 255, 0.95)",
-                  padding: "1.5rem",
-                  transform:
-                    hoveredCard === product.id
-                      ? "translateY(0)"
-                      : "translateY(100%)",
-                  transition: "transform 0.3s ease",
-                  textAlign: "center",
-                }}
-              >
-                <h3
-                  style={{
-                    fontSize: "1.2rem",
-                    marginBottom: "0.5rem",
-                    color: "#333",
-                    fontWeight: "600",
-                  }}
-                >
-                  {product.name}
-                </h3>
-
-                <div
-                  style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    gap: "0.25rem",
-                    marginBottom: "0.5rem",
-                  }}
-                >
-                  {[...Array(5)].map((_, i) => (
-                    <FaStar
-                      key={i}
-                      style={{
-                        color: i < product.rating ? "#ffcb47" : "#e0e0e0",
-                        fontSize: "1rem",
-                      }}
-                    />
-                  ))}
-                </div>
-
-                <p
-                  style={{
-                    fontSize: "1.3rem",
-                    fontWeight: "700",
-                    color: "#e83e8c",
-                    margin: "0.75rem 0",
-                  }}
-                >
-                  {formatPrice(product.price)}
-                </p>
-
-                <button
-                  onClick={() => handleAddToCart(product)}
-                  style={{
-                    background: "#e83e8c",
-                    color: "white",
-                    border: "none",
-                    padding: "0.75rem 1.5rem",
-                    borderRadius: "6px",
-                    fontWeight: "600",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    width: "100%",
-                    maxWidth: "200px",
-                    margin: "0 auto",
-                    display: "block",
-                  }}
-                >
-                  Add to Cart
-                </button>
-              </div>
-            </div>
-          </div>
-        ))}
+        {productCards}
       </div>
     </section>
   );
