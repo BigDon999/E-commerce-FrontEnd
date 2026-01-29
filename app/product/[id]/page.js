@@ -3,6 +3,7 @@
 import React from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useProducts } from '../../context/ProductContext';
 import { useCart } from '../../context/CartContext';
 import styles from './page.module.css';
@@ -26,19 +27,16 @@ export default function ProductDetail() {
     <div className={styles.container}>
       <div className={styles.productContainer}>
         <div className={styles.imageContainer}>
-          <img
+          <Image
             src={product.image}
             alt={product.name}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
             style={{
-              width: '100%',
-              height: '100%',
               objectFit: 'cover',
               borderRadius: '8px'
             }}
-            onError={(e) => {
-              console.error(`Failed to load product image: ${product.image}`);
-              e.target.src = "/assets/placeholder.jpg";
-            }}
+            priority
           />
         </div>
         

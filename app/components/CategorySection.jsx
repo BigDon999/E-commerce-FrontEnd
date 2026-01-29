@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import styles from "./CategorySection.module.css";
+import Image from "next/image";
 
 const categories = [
   { title: "Men", image: "/assets/men.jpg" },
@@ -15,7 +16,15 @@ const CategorySection = () => {
       <div className={styles.categoriesGrid}>
         {categories.map((category, index) => (
           <div className={styles.categoryCard} key={index}>
-            <img src={category.image} alt={category.title} className={styles.image} />
+            <div className={styles.imageWrapper}>
+              <Image 
+                src={category.image} 
+                alt={category.title} 
+                fill 
+                style={{ objectFit: "cover" }}
+                sizes="(max-width: 768px) 100vw, 33vw"
+              />
+            </div>
             <h3>{category.title}</h3>
           </div>
         ))}

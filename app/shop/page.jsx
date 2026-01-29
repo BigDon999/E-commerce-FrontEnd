@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useCallback } from "react";
+import Image from "next/image";
 import { FaStar } from "react-icons/fa";
 import { useCart } from "../context/CartContext";
 
@@ -211,21 +212,15 @@ const ShopSection = () => {
               Featured
             </span>
           )}
-          <img
+          <Image
             src={product.image}
             alt={product.name}
+            fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             style={{
-              width: "100%",
-              height: "100%",
               objectFit: "cover",
               transform: hoveredCard === product.id ? "scale(1.05)" : "scale(1)",
               transition: "transform 0.5s ease",
-            }}
-            loading="lazy"
-            decoding="async"
-            onError={(e) => {
-              console.error(`Failed to load image: ${product.image}`);
-              e.target.src = "/assets/placeholder.jpg";
             }}
           />
           <div

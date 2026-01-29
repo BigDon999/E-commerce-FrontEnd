@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { FaSearch, FaBars, FaTimes } from "react-icons/fa";
 import { useProducts } from "../context/ProductContext";
 import { useCart } from "../context/CartContext";
@@ -210,7 +211,7 @@ export default function Navbar() {
                     }}
                   >
                     <div className={styles.productImage}>
-                      <img
+                      <Image
                         src={product.image}
                         alt={product.name}
                         width={50}
